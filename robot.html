@@ -199,12 +199,19 @@
                     let x = cambiarColumnaACoordenadaX(coordenadasSeparadas[0]);
                     let y = cambiarFilaACoordenadaY(coordenadasSeparadas[1]);
                     ctx.fillText("💥", x, y);
-                    alert("GAME OVER");
+                    pintarGameOver();
 
                     // retornamos para que no siga buscando otras bombas (no debe haber más)
                     return
                 }
             }
+        }
+
+        function pintarGameOver() {
+            ctx.fillStyle = "red";
+            ctx.textAlign = "center";
+            ctx.font = "60px arial";
+            ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
         }
         
     </script>
