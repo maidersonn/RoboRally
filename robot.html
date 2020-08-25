@@ -31,6 +31,7 @@
         let posColumna = 1;
         document.addEventListener('keydown', keyPressed);
         let listaDePosicionDeBombas = [];
+        let isGameOver = false;
         empezarDeNuevo();
         
         function pintarTablero () {
@@ -76,50 +77,55 @@
         }
 
         function moverAbajo() {
-            if (posFila < 10) {
-                borrarTablero();
-                pintarTablero();
-                posFila = posFila + 1;
-                pintarRobot(); 
-                repintarBombas(); 
-                comprobarSiHayBomba();
-            } 
+            if (isGameOver != true) {
+                if (posFila < 10) {
+                    borrarTablero();
+                    pintarTablero();
+                    posFila = posFila + 1;
+                    pintarRobot(); 
+                    repintarBombas(); 
+                    comprobarSiHayBomba();
+                } 
+            }
         }
 
         function moverArriba() {
-            if (posFila > 1) {
-                borrarTablero();
-                pintarTablero();
-                posFila = posFila - 1;
-                pintarRobot(); 
-                repintarBombas();  
-                comprobarSiHayBomba();         
+            if (isGameOver != true) {
+                if (posFila > 1) {
+                    borrarTablero();
+                    pintarTablero();
+                    posFila = posFila - 1;
+                    pintarRobot(); 
+                    repintarBombas();  
+                    comprobarSiHayBomba();         
+                }
             }
-
         }
 
         function moverDerecha() {
-            if (posColumna < 10) {
-                borrarTablero();
-                pintarTablero();
-                posColumna = posColumna + 1;
-                pintarRobot();
-                repintarBombas();
-                comprobarSiHayBomba();
+            if (isGameOver != true) {
+                if (posColumna < 10) {
+                    borrarTablero();
+                    pintarTablero();
+                    posColumna = posColumna + 1;
+                    pintarRobot();
+                    repintarBombas();
+                    comprobarSiHayBomba();
+                }
             }
-            
         }
 
         function moverIzquierda() {
-            if (posColumna > 1) {
-                borrarTablero();
-                pintarTablero();
-                posColumna = posColumna - 1;
-                pintarRobot();
-                repintarBombas();  
-                comprobarSiHayBomba();
+            if (isGameOver != true) {
+                if (posColumna > 1) {
+                    borrarTablero();
+                    pintarTablero();
+                    posColumna = posColumna - 1;
+                    pintarRobot();
+                    repintarBombas();  
+                    comprobarSiHayBomba();
+                }
             }
-
         }
         
         function empezarDeNuevo() {
@@ -128,6 +134,7 @@
             posColumna = 1;
             posFila = 1;
             pintarRobot();
+            isGameOver = false;
             listaDePosicionDeBombas = [];
             let numeroDeBombasQuePoner = 5;
             for (let contador = 0; contador < numeroDeBombasQuePoner; contador++) {
@@ -200,6 +207,7 @@
                     let y = cambiarFilaACoordenadaY(coordenadasSeparadas[1]);
                     ctx.fillText("💥", x, y);
                     alert("GAME OVER");
+                    isGameOver = true;
                 }
             }
         }
