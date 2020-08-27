@@ -77,54 +77,46 @@
         }
 
         function moverAbajo() {
-            if (isGameOver != true) {
-                if (posFila < 10) {
-                    borrarTablero();
-                    pintarTablero();
-                    posFila = posFila + 1;
-                    pintarRobot(); 
-                    repintarBombas(); 
-                    comprobarSiHayBomba();
-                } 
+            if (!isGameOver && posFila < 10) {
+                borrarTablero();
+                pintarTablero();
+                posFila = posFila + 1;
+                pintarRobot(); 
+                repintarBombas(); 
+                comprobarSiHayBomba();
             }
         }
 
         function moverArriba() {
-            if (isGameOver != true) {
-                if (posFila > 1) {
-                    borrarTablero();
-                    pintarTablero();
-                    posFila = posFila - 1;
-                    pintarRobot(); 
-                    repintarBombas();  
-                    comprobarSiHayBomba();         
-                }
+            if (!isGameOver && posFila > 1) {
+                borrarTablero();
+                pintarTablero();
+                posFila = posFila - 1;
+                pintarRobot(); 
+                repintarBombas();  
+                comprobarSiHayBomba();         
             }
         }
 
         function moverDerecha() {
-            if (isGameOver != true) {
-                if (posColumna < 10) {
-                    borrarTablero();
-                    pintarTablero();
-                    posColumna = posColumna + 1;
-                    pintarRobot();
-                    repintarBombas();
-                    comprobarSiHayBomba();
-                }
+            if (!isGameOver && posColumna < 10) {
+                borrarTablero();
+                pintarTablero();
+                posColumna = posColumna + 1;
+                pintarRobot();
+                repintarBombas();
+                comprobarSiHayBomba();
             }
         }
 
         function moverIzquierda() {
-            if (isGameOver != true) {
-                if (posColumna > 1) {
-                    borrarTablero();
-                    pintarTablero();
-                    posColumna = posColumna - 1;
-                    pintarRobot();
-                    repintarBombas();  
-                    comprobarSiHayBomba();
-                }
+            if (!isGameOver && posColumna > 1) {
+                borrarTablero();
+                pintarTablero();
+                posColumna = posColumna - 1;
+                pintarRobot();
+                repintarBombas();  
+                comprobarSiHayBomba();
             }
         }
         
@@ -141,8 +133,6 @@
                 ponerBombasRandom();
             }
         }
-
-
 
        // Para mover el robot con teclas
 
