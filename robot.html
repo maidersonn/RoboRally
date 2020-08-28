@@ -41,7 +41,9 @@
             let isGameOver = false;
             let posicionDeRegaloX;
             let posicionDeRegaloY;
-            let isLevelCompleted = false;
+            let isLevelCompleted = false;            
+            let posZombiX;
+            let posZombiY;
             empezarDeNuevo();
             
             function pintarTablero () {
@@ -94,6 +96,7 @@
                     pintarRobot(); 
                     repintarBombas(); 
                     repintarRegalo();
+                    repintarZombi();
                     comprobarSiHayBomba();
                     comprobarSiHayRegalo();
                 }
@@ -106,7 +109,8 @@
                     posFila = posFila - 1;
                     pintarRobot(); 
                     repintarBombas();
-                    repintarRegalo();  
+                    repintarRegalo(); 
+                    repintarZombi(); 
                     comprobarSiHayBomba();  
                     comprobarSiHayRegalo();       
                 }
@@ -120,6 +124,7 @@
                     pintarRobot();
                     repintarBombas();
                     repintarRegalo();
+                    repintarZombi();
                     comprobarSiHayBomba();
                     comprobarSiHayRegalo();
                 }
@@ -133,6 +138,7 @@
                     pintarRobot();
                     repintarBombas();
                     repintarRegalo(); 
+                    repintarZombi();
                     comprobarSiHayBomba();
                     comprobarSiHayRegalo();
                 }
@@ -251,14 +257,41 @@
                 }
             }
     
-    
             function pintarLevelCompleted() {
                 ctx.fillStyle = "blue";
                 ctx.textAlign = "center";
                 ctx.font = "40px arial";
                 ctx.fillText("LEVEL COMPLETED !!!", canvas.width/2, canvas.height/2);
             }
-    
+
+            function ponerZombi() {
+                let fila = Math.floor(Math.random() * 10) + 1;
+                let columna = Math.floor(Math.random() * 10 + 1);
+                let posZombi = columna + ',' + fila;
+
+                if (columna == 1 && fila == 1) {
+                    ponerZombi();
+                } else if (listaDePosicionDeBombas.includes(posZombi)){
+                    ponerZombi();
+                } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
+                    ponerZombi();
+                } else {
+                    posZombiX = columna;
+                    posZombiY = fila;
+                    let x = cambiarColumnaACoordenadaX(columna);
+                    let y = cambiarFilaACoordenadaY(fila); 
+                    ctx.font = '30px serif';
+                    ctx.fillText('🧟‍♂️', x, y);
+                }     
+            }    
+
+            function repintarZombi() {
+                ctx.font = '30px serif';
+                let x = cambiarColumnaACoordenadaX(posZombiX);
+                let y = cambiarFilaACoordenadaY(posZombiY); 
+                ctx.fillText("🧟‍♂️", x, y);
+            }   
+
             function empezarDeNuevo() {
                 borrarTablero();
                 pintarTablero();
@@ -274,6 +307,7 @@
                     ponerBombasRandom();
                 }
                 ponerRegalo();
+                ponerZombi();
             }
 
 
