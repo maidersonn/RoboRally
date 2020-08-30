@@ -90,58 +90,66 @@
     
             function moverAbajo() {
                 if (!isGameOver && !isLevelCompleted && posFila < 10) {
-                    borrarTablero();
-                    pintarTablero();
                     posFila = posFila + 1;
-                    pintarRobot(); 
-                    repintarBombas(); 
-                    repintarRegalo();
-                    repintarZombi();
-                    comprobarSiHayBomba();
-                    comprobarSiHayRegalo();
                 }
+                borrarTablero();
+                pintarTablero();
+                pintarRobot(); 
+                repintarBombas(); 
+                repintarRegalo();
+                comprobarSiHayBomba();
+                comprobarSiHayRegalo();
+                comprobarSiRobotPillado();
+                perseguirAlRobot();
+                comprobarSiRobotPillado();
             }
     
             function moverArriba() {
                 if (!isGameOver && !isLevelCompleted && posFila > 1) {
-                    borrarTablero();
-                    pintarTablero();
-                    posFila = posFila - 1;
-                    pintarRobot(); 
-                    repintarBombas();
-                    repintarRegalo(); 
-                    repintarZombi(); 
-                    comprobarSiHayBomba();  
-                    comprobarSiHayRegalo();       
+                    posFila = posFila - 1; 
                 }
+                borrarTablero();
+                pintarTablero();
+                pintarRobot(); 
+                repintarBombas();
+                repintarRegalo();  
+                comprobarSiHayBomba();  
+                comprobarSiHayRegalo();  
+                comprobarSiRobotPillado();
+                perseguirAlRobot();
+                comprobarSiRobotPillado();
             }
     
             function moverDerecha() {
                 if (!isGameOver && !isLevelCompleted && posColumna < 10) {
-                    borrarTablero();
-                    pintarTablero();
                     posColumna = posColumna + 1;
-                    pintarRobot();
-                    repintarBombas();
-                    repintarRegalo();
-                    repintarZombi();
-                    comprobarSiHayBomba();
-                    comprobarSiHayRegalo();
                 }
+                borrarTablero();
+                pintarTablero();
+                pintarRobot();
+                repintarBombas();
+                repintarRegalo();
+                comprobarSiHayBomba();
+                comprobarSiHayRegalo();
+                comprobarSiRobotPillado();
+                perseguirAlRobot();
+                comprobarSiRobotPillado();
             }
     
             function moverIzquierda() {
                 if (!isGameOver && !isLevelCompleted && posColumna > 1) {
-                    borrarTablero();
-                    pintarTablero();
                     posColumna = posColumna - 1;
-                    pintarRobot();
-                    repintarBombas();
-                    repintarRegalo(); 
-                    repintarZombi();
-                    comprobarSiHayBomba();
-                    comprobarSiHayRegalo();
                 }
+                borrarTablero();
+                pintarTablero();
+                pintarRobot();
+                repintarBombas();
+                repintarRegalo(); 
+                comprobarSiHayBomba();
+                comprobarSiHayRegalo();
+                comprobarSiRobotPillado();
+                perseguirAlRobot();
+                comprobarSiRobotPillado();
             }
     
            // Para mover el robot con teclas
@@ -218,6 +226,7 @@
                 ctx.textAlign = "center";
                 ctx.font = "60px arial";
                 ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+                ctx.textAlign = "start";
             }
     
             function ponerRegalo() {
@@ -225,7 +234,7 @@
                 let fila = Math.floor(Math.random() * 10) + 6;
                 let columna = Math.floor(Math.random() * 10 + 6);
     
-                   if (columna > 10 || fila > 10) {
+                if (columna > 10 || fila > 10) {
                     ponerRegalo();
                 } else {
                     let posicionRegalo = columna + ',' + fila;
@@ -262,6 +271,7 @@
                 ctx.textAlign = "center";
                 ctx.font = "40px arial";
                 ctx.fillText("LEVEL COMPLETED !!!", canvas.width/2, canvas.height/2);
+                ctx.textAlign = "start";
             }
 
             function ponerZombi() {
@@ -283,8 +293,8 @@
                     ctx.font = '30px serif';
                     ctx.fillText('🧟‍♂️', x, y);
                 }     
-            }    
-
+            }  
+            
             function repintarZombi() {
                 ctx.font = '30px serif';
                 let x = cambiarColumnaACoordenadaX(posZombiX);
@@ -292,10 +302,62 @@
                 ctx.fillText("🧟‍♂️", x, y);
             }   
 
+            function perseguirPorColumna() {
+                let y = cambiarFilaACoordenadaY(posZombiY);
+                let x;  
+                
+                    if (posColumna > posZombiX) {
+                        posZombiX++;
+                        x = cambiarColumnaACoordenadaX(posZombiX);
+                        ctx.font = '30px serif';
+                        ctx.fillText("🧟‍♂️", x, y);
+                    } else  {
+                        posZombiX--;
+                        x = cambiarColumnaACoordenadaX(posZombiX);
+                        ctx.font = '30px serif';
+                        ctx.fillText("🧟‍♂️", x, y);
+                    }  
+            } 
+
+            function perseguirPorFila() {
+                let x = cambiarColumnaACoordenadaX(posZombiX);
+                let y;
+    
+                if (posFila > posZombiY) {
+                    posZombiY++;
+                    y = cambiarFilaACoordenadaY(posZombiY);
+                    ctx.font = '30px serif';
+                    ctx.fillText("🧟‍♂️", x, y);
+                } else if (posFila < posZombiY) {
+                    posZombiY--;
+                    y = cambiarFilaACoordenadaY(posZombiY);
+                    ctx.font = '30px serif';
+                    ctx.fillText("🧟‍♂️", x, y);
+                }
+            } 
+
+            function perseguirAlRobot() {
+                if (!isGameOver && !isLevelCompleted) {
+                    let diferenciaEnColumna = Math.abs(posColumna - posZombiX);
+                    let diferenciaEnFila = Math.abs(posFila - posZombiY);
+                    if (diferenciaEnColumna < diferenciaEnFila) {
+                        perseguirPorFila();
+                    } else {
+                        perseguirPorColumna();
+                    } 
+                }
+            } 
+
+            function comprobarSiRobotPillado() {
+                if (posColumna == posZombiX && posFila == posZombiY) {
+                    pintarGameOver();
+                    isGameOver = true;
+                }
+            }
+
             function empezarDeNuevo() {
                 borrarTablero();
                 pintarTablero();
-                ctx.textAlign = "start";
                 posColumna = 1;
                 posFila = 1;
                 pintarRobot();
