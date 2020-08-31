@@ -1,381 +1,421 @@
 
-
+<!DOCTYPE html>
+<html>
 <head>
 
-    <script src="https://use.fontawesome.com/8961a221b9.js"></script>
-    
-    </head>
-    
-    <body>
-        <h1>Mi juego de Robi</h1>
-        
-        <canvas id="el-lienzo" width="500" height="500"></canvas>
-    
-        <div>
-            <ul>
-                <button type="button" onclick="moverDerecha()"><i class="fa fa-arrow-right" aria-hidden="true"></i>
-                </button>
-                <button type="button" onclick="moverAbajo()"><i class="fa fa-arrow-down" aria-hidden="true"></i>
-                </button>
-                <li><a href="javascript:empezarDeNuevo()">Empezar</a></li>
-                <li><a href="javascript:moverAbajo()">Mover abajo</a></li>
-                <li><a href="javascript:moverArriba()">Mover arriba</a></li>
-                <li><a href="javascript:moverDerecha()">Mover derecha</a></li>
-                <li><a href="javascript:moverIzquierda()">Mover izquierda</a></li>
-                
-            </ul>
-        </div>
-        
-    
-        <h3>Este juego ha sido desarrollado por Maider.</h3>
-    
-        
-        <script>
-    
-            let canvas = document.getElementById("el-lienzo");
-            let ctx = canvas.getContext("2d");
-            let posFila = 1;
-            let posColumna = 1;
-            document.addEventListener('keydown', keyPressed);
-            let listaDePosicionDeBombas = [];
-            let isGameOver = false;
-            let posicionDeRegaloX;
-            let posicionDeRegaloY;
-            let isLevelCompleted = false;            
-            let posZombiX;
-            let posZombiY;
-            empezarDeNuevo();
+    <script src="https://kit.fontawesome.com/a58310cfde.js" crossorigin="anonymous"></script>>
+    <style>
+        h1{
+            text-align: center;
+            font-size: 60px;
+            color: red  ;
             
-            function pintarTablero () {
+        }
+        .centrarcanvas {
+            position: ;
+        }
+
+        canvas {
+            background-color: palegreen;
+            border: 7px solid black;
+        }
+    </style>
     
-                // pintar marco
-                ctx.strokeRect(0, 0, 500, 500);
+</head>
+
+<body>
     
-                // pintar líneas verticales
+    <h1>RoboRally 🤖</h1>
+    <div class="centrarcanvas">
+        <!--Redimensionar el canvas segun respuesta usuario en formulario-->
+        <canvas id="el-lienzo" width="500" height="500"></canvas>
+    </div>
     
-                let x = 50;
-                for (let contador = 0; contador < 10; contador++) {
-                    ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, 500);
-                    ctx.stroke();
-                    ctx.closePath();
+
+    <div>
+        <ul>
+            <button type="button" onclick="moverDerecha()"><i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+            <button type="button" onclick="moverAbajo()"><i class="fa fa-arrow-down" aria-hidden="true"></i>
+            </button>
+            <button type="button" onclick="moverIzquierda()"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" onclick="moverArriba()"><i class="fa fa-arrow-up" aria-hidden="true"></i>
+            </button>
+            <button type="button" onclick="empezarDeNuevo()"><i class="fas fa-sync-alt"></i>
+            </button>
+  
+        </ul>
+    </div>
     
-                    x += 50;
-                }
-                // pintar lineas horizontales
+
+    <h3>Este juego ha sido desarrollado por Maider.</h3>
+
     
-                let y = 50;
-                for (let contador = 0; contador < 10; contador++) {  
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(500, y);
-                    ctx.stroke();
-                    ctx.closePath();
-    
-                    y += 50;
-                }  
+    <script>
+
+        let canvas = document.getElementById("el-lienzo");
+        let ctx = canvas.getContext("2d");
+        let posFila = 1;
+        let posColumna = 1;
+        document.addEventListener('keydown', keyPressed);
+        let listaDePosicionDeBombas = [];
+        let isGameOver = false;
+        let posicionDeRegaloX;
+        let posicionDeRegaloY;
+        let isLevelCompleted = false;            
+        let posZombiX;
+        let posZombiY;
+        let casillasAncho = 25;
+        let casillasAlto = 12;
+        empezarDeNuevo();
+
+        function cambiarAPixels(casillas) {
+            return casillas * 50;
+        }
+
+
+        
+        function pintarTablero () {
+            let anchoPixel = cambiarAPixels(casillasAncho);
+            let altoPixel = cambiarAPixels(casillasAlto); 
+            // pintar marco
+            ctx.strokeRect(0, 0, anchoPixel, altoPixel);
+
+            // pintar líneas verticales
+
+            let x = 50;
+            for (let contador = 0; contador < casillasAncho; contador++) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, altoPixel);
+                ctx.stroke();
+                ctx.closePath();
+
+                x += 50;
             }
-    
-            function borrarTablero() {
-                ctx.clearRect(0, 0, 500, 500);
+            // pintar lineas horizontales
+
+            let y = 50;
+            for (let contador = 0; contador < casillasAlto; contador++) {  
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(anchoPixel, y);
+                ctx.stroke();
+                ctx.closePath();
+
+                y += 50;
+            }  
+        }
+
+        function borrarTablero() {
+            let anchoPixel = cambiarAPixels(casillasAncho);
+            let altoPixel = cambiarAPixels(casillasAlto); 
+            ctx.clearRect(0, 0, anchoPixel, altoPixel);
+        }
+
+        function pintarRobot() {
+            ctx.font = "30px serif";
+            let posY = cambiarFilaACoordenadaY(posFila);
+            let posX = cambiarColumnaACoordenadaX(posColumna);
+            ctx.fillText("🤖", posX, posY);
+        }
+
+        function moverAbajo() {
+            if (!isGameOver && !isLevelCompleted && posFila < casillasAlto) {
+                posFila = posFila + 1;
             }
-    
-            function pintarRobot() {
-                ctx.font = "30px serif";
-                let posY = cambiarFilaACoordenadaY(posFila);
-                let posX = cambiarColumnaACoordenadaX(posColumna);
-                ctx.fillText("🤖", posX, posY);
+            borrarTablero();
+            pintarTablero();
+            pintarRobot(); 
+            repintarBombas(); 
+            repintarRegalo();
+            comprobarSiHayBomba();
+            comprobarSiHayRegalo();
+            comprobarSiRobotPillado();
+            perseguirAlRobot();
+            comprobarSiRobotPillado();
+        }
+
+        function moverArriba() {
+            if (!isGameOver && !isLevelCompleted && posFila > 1) {
+                posFila = posFila - 1; 
             }
-    
-            function moverAbajo() {
-                if (!isGameOver && !isLevelCompleted && posFila < 10) {
-                    posFila = posFila + 1;
-                }
-                borrarTablero();
-                pintarTablero();
-                pintarRobot(); 
-                repintarBombas(); 
-                repintarRegalo();
-                comprobarSiHayBomba();
-                comprobarSiHayRegalo();
-                comprobarSiRobotPillado();
-                perseguirAlRobot();
-                comprobarSiRobotPillado();
+            borrarTablero();
+            pintarTablero();
+            pintarRobot(); 
+            repintarBombas();
+            repintarRegalo();  
+            comprobarSiHayBomba();  
+            comprobarSiHayRegalo();  
+            comprobarSiRobotPillado();
+            perseguirAlRobot();
+            comprobarSiRobotPillado();
+        }
+
+        function moverDerecha() {
+            if (!isGameOver && !isLevelCompleted && posColumna < casillasAncho) {
+                posColumna = posColumna + 1;
             }
-    
-            function moverArriba() {
-                if (!isGameOver && !isLevelCompleted && posFila > 1) {
-                    posFila = posFila - 1; 
-                }
-                borrarTablero();
-                pintarTablero();
-                pintarRobot(); 
-                repintarBombas();
-                repintarRegalo();  
-                comprobarSiHayBomba();  
-                comprobarSiHayRegalo();  
-                comprobarSiRobotPillado();
-                perseguirAlRobot();
-                comprobarSiRobotPillado();
+            borrarTablero();
+            pintarTablero();
+            pintarRobot();
+            repintarBombas();
+            repintarRegalo();
+            comprobarSiHayBomba();
+            comprobarSiHayRegalo();
+            comprobarSiRobotPillado();
+            perseguirAlRobot();
+            comprobarSiRobotPillado();
+        }
+
+        function moverIzquierda() {
+            if (!isGameOver && !isLevelCompleted && posColumna > 1) {
+                posColumna = posColumna - 1;
             }
-    
-            function moverDerecha() {
-                if (!isGameOver && !isLevelCompleted && posColumna < 10) {
-                    posColumna = posColumna + 1;
-                }
-                borrarTablero();
-                pintarTablero();
-                pintarRobot();
-                repintarBombas();
-                repintarRegalo();
-                comprobarSiHayBomba();
-                comprobarSiHayRegalo();
-                comprobarSiRobotPillado();
-                perseguirAlRobot();
-                comprobarSiRobotPillado();
+            borrarTablero();
+            pintarTablero();
+            pintarRobot();
+            repintarBombas();
+            repintarRegalo(); 
+            comprobarSiHayBomba();
+            comprobarSiHayRegalo();
+            comprobarSiRobotPillado();
+            perseguirAlRobot();
+            comprobarSiRobotPillado();
+        }
+
+        // Para mover el robot con teclas
+
+        function keyPressed (event) {
+            switch (event.keyCode) {
+                case 38: moverArriba(); break;
+                case 40: moverAbajo(); break;
+                case 37: moverIzquierda(); break;
+                case 39: moverDerecha(); break;
             }
-    
-            function moverIzquierda() {
-                if (!isGameOver && !isLevelCompleted && posColumna > 1) {
-                    posColumna = posColumna - 1;
-                }
-                borrarTablero();
-                pintarTablero();
-                pintarRobot();
-                repintarBombas();
-                repintarRegalo(); 
-                comprobarSiHayBomba();
-                comprobarSiHayRegalo();
-                comprobarSiRobotPillado();
-                perseguirAlRobot();
-                comprobarSiRobotPillado();
-            }
-    
-           // Para mover el robot con teclas
-    
-           function keyPressed (event) {
-              switch (event.keyCode) {
-                  case 38: moverArriba(); break;
-                  case 40: moverAbajo(); break;
-                  case 37: moverIzquierda(); break;
-                  case 39: moverDerecha(); break;
-              }
-           }
-           
-           // Para poner bombas aleatoriamente y guardar su posicion
-           
-    
-           function ponerBombasRandom() {
-    
-                let fila = Math.floor(Math.random() * 10) + 1;
-                let columna = Math.floor(Math.random() * 10 + 1);
-    
-                if (columna == 1 && fila == 1) {
+        }
+        //
+        // Para poner bombas aleatoriamente y guardar su posicion
+        
+
+        function ponerBombasRandom() {
+
+            let fila = Math.floor(Math.random() * casillasAlto) + 1;
+            let columna = Math.floor(Math.random() * casillasAncho + 1);
+
+            if (columna == 1 && fila == 1) {
+                ponerBombasRandom();
+            } else {
+                let posicionBomba = columna + ',' + fila;
+                if (listaDePosicionDeBombas.includes(posicionBomba)) {
                     ponerBombasRandom();
                 } else {
-                    let posicionBomba = columna + ',' + fila;
-                    if (listaDePosicionDeBombas.includes(posicionBomba)) {
-                        ponerBombasRandom();
-                    } else {
-                        let x = cambiarColumnaACoordenadaX(columna);
-                        let y = cambiarFilaACoordenadaY(fila);
-                        listaDePosicionDeBombas.push(posicionBomba); 
-                        ctx.font = '30px serif';
-                        ctx.fillText('💣', x, y);
-                    }
-                    
-                }       
-           }
-           
-           function cambiarFilaACoordenadaY(unaFila) {
-                return unaFila * 50 -20;
-           }
-    
-           function cambiarColumnaACoordenadaX(unaColumna) {
-                return unaColumna * 50 -43;
-           }
-    
-           function repintarBombas() {
-               for (i = 0; i < listaDePosicionDeBombas.length; i++) {
-                    let coordenadasSeparadas = listaDePosicionDeBombas[i].split(',');
-                    let x = cambiarColumnaACoordenadaX(coordenadasSeparadas[0]);
-                    let y = cambiarFilaACoordenadaY(coordenadasSeparadas[1]);
+                    let x = cambiarColumnaACoordenadaX(columna);
+                    let y = cambiarFilaACoordenadaY(fila);
+                    listaDePosicionDeBombas.push(posicionBomba); 
                     ctx.font = '30px serif';
                     ctx.fillText('💣', x, y);
                 }
-           }   
-    
-           function comprobarSiHayBomba() {
-                for(let bomba of listaDePosicionDeBombas) {
-                    let coordenadasSeparadas = bomba.split(',');
-                    if (posColumna == coordenadasSeparadas[0] && posFila == coordenadasSeparadas[1]) {
-                        ctx.font = "30px serif";
-                        let x = cambiarColumnaACoordenadaX(coordenadasSeparadas[0]);
-                        let y = cambiarFilaACoordenadaY(coordenadasSeparadas[1]);
-                        ctx.fillText("💥", x, y);
-                        pintarGameOver();
-                        isGameOver = true;
-                        return;
-                    }
-                }
-            }
-    
-            function pintarGameOver() {
-                ctx.fillStyle = "red";
-                ctx.textAlign = "center";
-                ctx.font = "60px arial";
-                ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
-                ctx.textAlign = "start";
-            }
-    
-            function ponerRegalo() {
-    
-                let fila = Math.floor(Math.random() * 10) + 6;
-                let columna = Math.floor(Math.random() * 10 + 6);
-    
-                if (columna > 10 || fila > 10) {
-                    ponerRegalo();
-                } else {
-                    let posicionRegalo = columna + ',' + fila;
-                    if (listaDePosicionDeBombas.includes(posicionRegalo)) {
-                        ponerRegalo();
-                    } else {
-                        let x = cambiarColumnaACoordenadaX(columna);
-                        let y = cambiarFilaACoordenadaY(fila); 
-                        posicionDeRegaloX = columna;
-                        posicionDeRegaloY = fila; 
-                        ctx.font = '30px serif';
-                        ctx.fillText("🎁", x, y);
-                    }
-                    
-                }     
-            }
-    
-            function repintarRegalo() {
-                ctx.font = '30px serif';
-                let x = cambiarColumnaACoordenadaX(posicionDeRegaloX);
-                let y = cambiarFilaACoordenadaY(posicionDeRegaloY); 
-                ctx.fillText("🎁", x, y);
-            }
-    
-            function comprobarSiHayRegalo() {
-                if(posicionDeRegaloX == posColumna && posicionDeRegaloY == posFila) {
-                    pintarLevelCompleted();
-                    isLevelCompleted = true;
-                }
-            }
-    
-            function pintarLevelCompleted() {
-                ctx.fillStyle = "blue";
-                ctx.textAlign = "center";
-                ctx.font = "40px arial";
-                ctx.fillText("LEVEL COMPLETED !!!", canvas.width/2, canvas.height/2);
-                ctx.textAlign = "start";
-            }
-
-            function ponerZombi() {
-                let fila = Math.floor(Math.random() * 10) + 1;
-                let columna = Math.floor(Math.random() * 10 + 1);
-                let posZombi = columna + ',' + fila;
-
-                if (columna == 1 && fila == 1) {
-                    ponerZombi();
-                } else if (listaDePosicionDeBombas.includes(posZombi)){
-                    ponerZombi();
-                } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
-                    ponerZombi();
-                } else {
-                    posZombiX = columna;
-                    posZombiY = fila;
-                    let x = cambiarColumnaACoordenadaX(columna);
-                    let y = cambiarFilaACoordenadaY(fila); 
-                    ctx.font = '30px serif';
-                    ctx.fillText('🧟‍♂️', x, y);
-                }     
-            }  
-            
-            function repintarZombi() {
-                ctx.font = '30px serif';
-                let x = cambiarColumnaACoordenadaX(posZombiX);
-                let y = cambiarFilaACoordenadaY(posZombiY); 
-                ctx.fillText("🧟‍♂️", x, y);
-            }   
-
-            function perseguirPorColumna() {
-                let y = cambiarFilaACoordenadaY(posZombiY);
-                let x;  
                 
-                    if (posColumna > posZombiX) {
-                        posZombiX++;
-                        x = cambiarColumnaACoordenadaX(posZombiX);
-                        ctx.font = '30px serif';
-                        ctx.fillText("🧟‍♂️", x, y);
-                    } else  {
-                        posZombiX--;
-                        x = cambiarColumnaACoordenadaX(posZombiX);
-                        ctx.font = '30px serif';
-                        ctx.fillText("🧟‍♂️", x, y);
-                    }  
-            } 
+            }       
+        }
+        
+        function cambiarFilaACoordenadaY(unaFila) {
+            return unaFila * 50 -20;
+        }
 
-            function perseguirPorFila() {
-                let x = cambiarColumnaACoordenadaX(posZombiX);
-                let y;
-    
-                if (posFila > posZombiY) {
-                    posZombiY++;
-                    y = cambiarFilaACoordenadaY(posZombiY);
-                    ctx.font = '30px serif';
-                    ctx.fillText("🧟‍♂️", x, y);
-                } else if (posFila < posZombiY) {
-                    posZombiY--;
-                    y = cambiarFilaACoordenadaY(posZombiY);
-                    ctx.font = '30px serif';
-                    ctx.fillText("🧟‍♂️", x, y);
-                }
-            } 
+        function cambiarColumnaACoordenadaX(unaColumna) {
+            return unaColumna * 50 -43;
+        }
 
-            function perseguirAlRobot() {
-                if (!isGameOver && !isLevelCompleted) {
-                    let diferenciaEnColumna = Math.abs(posColumna - posZombiX);
-                    let diferenciaEnFila = Math.abs(posFila - posZombiY);
-                    if (diferenciaEnColumna < diferenciaEnFila) {
-                        perseguirPorFila();
-                    } else {
-                        perseguirPorColumna();
-                    } 
-                }
-            } 
+        function repintarBombas() {
+            for (i = 0; i < listaDePosicionDeBombas.length; i++) {
+                let coordenadasSeparadas = listaDePosicionDeBombas[i].split(',');
+                let x = cambiarColumnaACoordenadaX(coordenadasSeparadas[0]);
+                let y = cambiarFilaACoordenadaY(coordenadasSeparadas[1]);
+                ctx.font = '30px serif';
+                ctx.fillText('💣', x, y);
+            }
+        }   
 
-            function comprobarSiRobotPillado() {
-                if (posColumna == posZombiX && posFila == posZombiY) {
+        function comprobarSiHayBomba() {
+            for(let bomba of listaDePosicionDeBombas) {
+                let coordenadasSeparadas = bomba.split(',');
+                if (posColumna == coordenadasSeparadas[0] && posFila == coordenadasSeparadas[1]) {
+                    ctx.font = "30px serif";
+                    let x = cambiarColumnaACoordenadaX(coordenadasSeparadas[0]);
+                    let y = cambiarFilaACoordenadaY(coordenadasSeparadas[1]);
+                    ctx.fillText("💥", x, y);
                     pintarGameOver();
                     isGameOver = true;
+                    return;
                 }
             }
+        }
 
-            function empezarDeNuevo() {
-                borrarTablero();
-                pintarTablero();
-                posColumna = 1;
-                posFila = 1;
-                pintarRobot();
-                isGameOver = false;
-                isLevelCompleted = false;
-                listaDePosicionDeBombas = [];
-                let numeroDeBombasQuePoner = 5;
-                for (let contador = 0; contador < numeroDeBombasQuePoner; contador++) {
-                    ponerBombasRandom();
-                }
+        function pintarGameOver() {
+            ctx.fillStyle = "red";
+            ctx.textAlign = "center";
+            ctx.font = "60px arial";
+            ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+            ctx.textAlign = "start";
+        }
+
+        function ponerRegalo() {
+            // Se suman más 6, para que el regalo esté alejado de la posicion inicial del robot.
+            let fila = Math.floor(Math.random() * Math.ceil(casillasAlto/2)) + (Math.ceil(casillasAlto/2)) + 1;
+            let columna = Math.floor(Math.random() * Math.ceil(casillasAncho/2)) + (Math.ceil(casillasAncho/2)) + 1;
+
+            
+            if (columna > casillasAncho || fila > casillasAlto) {
                 ponerRegalo();
-                ponerZombi();
+            } else {
+                let posicionRegalo = columna + ',' + fila;
+                if (listaDePosicionDeBombas.includes(posicionRegalo)) {
+                    ponerRegalo();
+                } else {
+                    let x = cambiarColumnaACoordenadaX(columna);
+                    let y = cambiarFilaACoordenadaY(fila); 
+                    posicionDeRegaloX = columna;
+                    posicionDeRegaloY = fila; 
+                    ctx.font = '30px serif';
+                    ctx.fillText("🎁", x, y);
+                    console.log(fila,columna);
+                }
+                
+            }     
+        }
+
+        function repintarRegalo() {
+            ctx.font = '30px serif';
+            let x = cambiarColumnaACoordenadaX(posicionDeRegaloX);
+            let y = cambiarFilaACoordenadaY(posicionDeRegaloY); 
+            ctx.fillText("🎁", x, y);
+        }
+
+        function comprobarSiHayRegalo() {
+            if(posicionDeRegaloX == posColumna && posicionDeRegaloY == posFila) {
+                pintarLevelCompleted();
+                isLevelCompleted = true;
             }
+        }
 
+        function pintarLevelCompleted() {
+            ctx.fillStyle = "blue";
+            ctx.textAlign = "center";
+            ctx.font = "40px arial";
+            ctx.fillText("LEVEL COMPLETED !!!", canvas.width/2, canvas.height/2);
+            ctx.textAlign = "start";
+        }
 
+        function ponerZombi() {
+            //TODO Aqui puedo poner el bucle con la cantidad de zombis q pide el usuario?
+            let fila = Math.floor(Math.random() * casillasAlto) + 1;
+            let columna = Math.floor(Math.random() * casillasAncho) + 1;
+            let posZombi = columna + ',' + fila;
 
+            if (columna == 1 && fila == 1) {
+                ponerZombi();
+            } else if (listaDePosicionDeBombas.includes(posZombi)){
+                ponerZombi();
+                //TODO Y en tonces aqui otro else if, si listaZombis incluye posZombi
+            } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
+                ponerZombi();
+            } else {
+                posZombiX = columna;
+                posZombiY = fila;
+                let x = cambiarColumnaACoordenadaX(columna);
+                let y = cambiarFilaACoordenadaY(fila); 
+                ctx.font = '30px serif';
+                ctx.fillText('🧟‍♂️', x, y);
+            }     
+        }  
+        
+        function repintarZombi() {
+            ctx.font = '30px serif';
+            let x = cambiarColumnaACoordenadaX(posZombiX);
+            let y = cambiarFilaACoordenadaY(posZombiY); 
+            ctx.fillText("🧟‍♂️", x, y);
+        }   
 
+        function perseguirPorColumna() {
+            let y = cambiarFilaACoordenadaY(posZombiY);
+            let x;  
+            
+                if (posColumna > posZombiX) {
+                    posZombiX++;
+                    x = cambiarColumnaACoordenadaX(posZombiX);
+                    ctx.font = '30px serif';
+                    ctx.fillText("🧟‍♂️", x, y);
+                } else  {
+                    posZombiX--;
+                    x = cambiarColumnaACoordenadaX(posZombiX);
+                    ctx.font = '30px serif';
+                    ctx.fillText("🧟‍♂️", x, y);
+                }  
+        } 
 
-        </script>
+        function perseguirPorFila() {
+            let x = cambiarColumnaACoordenadaX(posZombiX);
+            let y;
+
+            if (posFila > posZombiY) {
+                posZombiY++;
+                y = cambiarFilaACoordenadaY(posZombiY);
+                ctx.font = '30px serif';
+                ctx.fillText("🧟‍♂️", x, y);
+            } else if (posFila < posZombiY) {
+                posZombiY--;
+                y = cambiarFilaACoordenadaY(posZombiY);
+                ctx.font = '30px serif';
+                ctx.fillText("🧟‍♂️", x, y);
+            }
+        } 
+
+        function perseguirAlRobot() {
+            if (!isGameOver && !isLevelCompleted) {
+                let diferenciaEnColumna = Math.abs(posColumna - posZombiX);
+                let diferenciaEnFila = Math.abs(posFila - posZombiY);
+                if (diferenciaEnColumna < diferenciaEnFila) {
+                    perseguirPorFila();
+                } else {
+                    perseguirPorColumna();
+                } 
+            }
+        } 
+
+        function comprobarSiRobotPillado() {
+            if (posColumna == posZombiX && posFila == posZombiY) {
+                pintarGameOver();
+                isGameOver = true;
+            }
+        }
+
+        function empezarDeNuevo() {
+            let anchoPixel = cambiarAPixels(casillasAncho);
+            let altoPixel = cambiarAPixels(casillasAlto);
+            canvas.setAttribute("width", anchoPixel);
+            canvas.setAttribute("height", altoPixel);
+            borrarTablero();
+            pintarTablero();
+            posColumna = 1;
+            posFila = 1;
+            pintarRobot();
+            isGameOver = false;
+            isLevelCompleted = false;
+            listaDePosicionDeBombas = [];
+            let numeroDeBombasQuePoner = 5;
+            for (let contador = 0; contador < numeroDeBombasQuePoner; contador++) {
+                ponerBombasRandom();
+            }
+            ponerRegalo();
+            ponerZombi();
+        }
+
+    </script>
+
+</body>
+</html>
+        
     
-    </body>
