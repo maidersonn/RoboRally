@@ -11,10 +11,7 @@
             color: red  ;
             
         }
-        .centrarcanvas {
-            position: ;
-        }
-
+          
         canvas {
             background-color: palegreen;
             border: 7px solid black;
@@ -66,8 +63,9 @@
         let isLevelCompleted = false;            
         let posZombiX;
         let posZombiY;
-        let casillasAncho = 25;
-        let casillasAlto = 12;
+        let casillasAncho = 10;
+        let casillasAlto = 10;
+        let isZombiKilled = false;
         empezarDeNuevo();
 
         function cambiarAPixels(casillas) {
@@ -135,6 +133,7 @@
             comprobarSiRobotPillado();
             perseguirAlRobot();
             comprobarSiRobotPillado();
+            explotarZombi();
         }
 
         function moverArriba() {
@@ -151,6 +150,7 @@
             comprobarSiRobotPillado();
             perseguirAlRobot();
             comprobarSiRobotPillado();
+            explotarZombi();
         }
 
         function moverDerecha() {
@@ -167,6 +167,7 @@
             comprobarSiRobotPillado();
             perseguirAlRobot();
             comprobarSiRobotPillado();
+            explotarZombi();
         }
 
         function moverIzquierda() {
@@ -183,6 +184,7 @@
             comprobarSiRobotPillado();
             perseguirAlRobot();
             comprobarSiRobotPillado();
+            explotarZombi();
         }
 
         // Para mover el robot con teclas
@@ -281,7 +283,6 @@
                     posicionDeRegaloY = fila; 
                     ctx.font = '30px serif';
                     ctx.fillText("🎁", x, y);
-                    console.log(fila,columna);
                 }
                 
             }     
@@ -330,13 +331,6 @@
                 ctx.font = '30px serif';
                 ctx.fillText('🧟‍♂️', x, y);
             }     
-        }  
-        
-        function repintarZombi() {
-            ctx.font = '30px serif';
-            let x = cambiarColumnaACoordenadaX(posZombiX);
-            let y = cambiarFilaACoordenadaY(posZombiY); 
-            ctx.fillText("🧟‍♂️", x, y);
         }   
 
         function perseguirPorColumna() {
@@ -374,7 +368,7 @@
         } 
 
         function perseguirAlRobot() {
-            if (!isGameOver && !isLevelCompleted) {
+            if (!isGameOver && !isLevelCompleted && !isZombiKilled) {
                 let diferenciaEnColumna = Math.abs(posColumna - posZombiX);
                 let diferenciaEnFila = Math.abs(posFila - posZombiY);
                 if (diferenciaEnColumna < diferenciaEnFila) {
@@ -382,7 +376,7 @@
                 } else {
                     perseguirPorColumna();
                 } 
-            }
+            } 
         } 
 
         function comprobarSiRobotPillado() {
@@ -404,6 +398,7 @@
             pintarRobot();
             isGameOver = false;
             isLevelCompleted = false;
+            isZombiKilled = false;
             listaDePosicionDeBombas = [];
             let numeroDeBombasQuePoner = 5;
             for (let contador = 0; contador < numeroDeBombasQuePoner; contador++) {
@@ -413,9 +408,29 @@
             ponerZombi();
         }
 
+        function isZombiEnBomba() {
+            let posZon = posZombiX + "," + posZombiY;
+            return listaDePosicionDeBombas.includes(posZon)
+        }
+
+        function explotarZombi() {   
+            if (isZombiEnBomba()) {
+                isZombiKilled = true;
+                ctx.font = "30px serif";
+                let x = cambiarColumnaACoordenadaX(posZombiX);
+                let y = cambiarFilaACoordenadaY(posZombiY);
+                ctx.fillText("💥", x, y);
+                let posZon = posZombiX + "," + posZombiY;
+                let posicionBombaABorrar = listaDePosicionDeBombas.indexOf(posZon);
+                listaDePosicionDeBombas.splice(posicionBombaABorrar,1);
+                posZombiX = undefined;
+                posZombiY = undefined;
+            }
+        }
+
     </script>
 
 </body>
 </html>
-        
+    
     
