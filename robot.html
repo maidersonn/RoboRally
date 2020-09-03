@@ -5,48 +5,84 @@
 
     <script src="https://kit.fontawesome.com/a58310cfde.js" crossorigin="anonymous"></script>>
     <style>
-        h1{
+        h1 {
             text-align: center;
             font-size: 60px;
             color: red  ;
-            
         }
-          
+        .centrarcanvas {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         canvas {
             background-color: palegreen;
-            border: 7px solid black;
+            border: 7px solid black; 
+        }
+        .formulario {
+            border: 2px solid black;
+            background-color:khaki;
+            position: relative;
+            bottom: 600px;
+            text-align: center;
+            margin-left: 500px;
+            margin-right: 500px;
+        }
+        .controles {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .footer {
+            font-style: italic;
+            text-align: center;
         }
     </style>
     
 </head>
 
 <body>
-    
-    <h1>RoboRally 🤖</h1>
-    <div class="centrarcanvas">
-        <!--Redimensionar el canvas segun respuesta usuario en formulario-->
-        <canvas id="el-lienzo" width="500" height="500"></canvas>
-    </div>
-    
+    <header>
+        <h1>RoboRally 🤖</h1>
+    </header>
 
-    <div>
-        <ul>
-            <button type="button" onclick="moverDerecha()"><i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </button>
-            <button type="button" onclick="moverAbajo()"><i class="fa fa-arrow-down" aria-hidden="true"></i>
-            </button>
-            <button type="button" onclick="moverIzquierda()"><i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </button>
-            <button type="button" onclick="moverArriba()"><i class="fa fa-arrow-up" aria-hidden="true"></i>
-            </button>
-            <button type="button" onclick="empezarDeNuevo()"><i class="fas fa-sync-alt"></i>
-            </button>
-  
-        </ul>
+     <div class="centrarcanvas">
+        <canvas id="el-lienzo"></canvas>
     </div>
-    
 
-    <h3>Este juego ha sido desarrollado por Maider.</h3>
+    <div class="controles">
+        <button type="button" onclick="moverDerecha()"><i class="fa fa-arrow-right" aria-hidden="true"></i>
+        </button>
+        <button type="button" onclick="moverAbajo()"><i class="fa fa-arrow-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" onclick="moverIzquierda()"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" onclick="moverArriba()"><i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </button>
+        <button type="button" onclick="empezarDeNuevo()"><i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+
+    
+    <h3 class="footer">(Este juego ha sido desarrollado por Maider.)</h3>
+    
+    <div class="formulario" id="formulario">
+        <h3 >Bienvenido al juego de RoboRally !</h3>
+        <p >Elige tú mismo tu juego.</p>
+        <dl>
+            <dt>¿Cuántas columnas quieres?
+               <dd><input type="number" id="numColumna" min="3" step="1"></dd>
+            </dt>
+            <dt>¿Cuántas filas quieres?
+                <dd><input type="number" id="numFila" min="3" step="1"></dd>
+            </dt>
+   
+        </dl>   
+
+        <button type="button" onclick="esconderFormulario()">Jugar</button>
+
+    </div>
 
     
     <script>
@@ -77,10 +113,8 @@
         function pintarTablero () {
             let anchoPixel = cambiarAPixels(casillasAncho);
             let altoPixel = cambiarAPixels(casillasAlto); 
-            // pintar marco
+           
             ctx.strokeRect(0, 0, anchoPixel, altoPixel);
-
-            // pintar líneas verticales
 
             let x = 50;
             for (let contador = 0; contador < casillasAncho; contador++) {
@@ -92,7 +126,6 @@
 
                 x += 50;
             }
-            // pintar lineas horizontales
 
             let y = 50;
             for (let contador = 0; contador < casillasAlto; contador++) {  
@@ -187,7 +220,6 @@
             explotarZombi();
         }
 
-        // Para mover el robot con teclas
 
         function keyPressed (event) {
             switch (event.keyCode) {
@@ -197,9 +229,7 @@
                 case 39: moverDerecha(); break;
             }
         }
-        //
-        // Para poner bombas aleatoriamente y guardar su posicion
-        
+     
 
         function ponerBombasRandom() {
 
@@ -219,7 +249,6 @@
                     ctx.font = '30px serif';
                     ctx.fillText('💣', x, y);
                 }
-                
             }       
         }
         
@@ -283,8 +312,7 @@
                     posicionDeRegaloY = fila; 
                     ctx.font = '30px serif';
                     ctx.fillText("🎁", x, y);
-                }
-                
+                } 
             }     
         }
 
@@ -427,6 +455,17 @@
                 posZombiY = undefined;
             }
         }
+
+
+       function esconderFormulario() {
+            document.getElementById("formulario").style.display = "none";
+            let numDeColumnas = document.getElementById("numColumna").value;
+            casillasAncho = numDeColumnas;
+            let numDeFilas = document.getElementById("numFila").value;
+            casillasAlto = numDeFilas;
+            empezarDeNuevo();
+       }
+
 
     </script>
 
