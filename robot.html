@@ -87,6 +87,7 @@
     
     <script>
 
+        const MIN_TAMANO_TABLERO = 3;
         let canvas = document.getElementById("el-lienzo");
         let ctx = canvas.getContext("2d");
         let posFila = 1;
@@ -458,12 +459,16 @@
 
 
        function esconderFormulario() {
-            document.getElementById("formulario").style.display = "none";
-            let numDeColumnas = document.getElementById("numColumna").value;
-            casillasAncho = numDeColumnas;
+            
             let numDeFilas = document.getElementById("numFila").value;
-            casillasAlto = numDeFilas;
-            empezarDeNuevo();
+            let numDeColumnas = document.getElementById("numColumna").value;
+            if (!isNaN(numDeColumnas) && numDeColumnas >= MIN_TAMANO_TABLERO 
+                    && !isNaN(numDeFilas) && numDeFilas >= MIN_TAMANO_TABLERO) {
+                casillasAncho = numDeColumnas;
+                casillasAlto = numDeFilas;  
+                document.getElementById("formulario").style.display = "none";
+                empezarDeNuevo();
+            }
        }
 
 
