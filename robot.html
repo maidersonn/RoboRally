@@ -80,7 +80,7 @@
    
         </dl>   
 
-        <button type="button" onclick="esconderFormulario()">Jugar</button>
+        <button type="button" onclick="validarFormulario()">Jugar</button>
 
     </div>
 
@@ -104,6 +104,7 @@
         let casillasAlto = 10;
         let isZombiKilled = false;
         empezarDeNuevo();
+        
 
         function cambiarAPixels(casillas) {
             return casillas * 50;
@@ -458,7 +459,7 @@
         }
 
 
-       function esconderFormulario() {
+       function validarFormulario() {
             
             let numDeFilas = document.getElementById("numFila").value;
             let numDeColumnas = document.getElementById("numColumna").value;
@@ -466,9 +467,13 @@
                     && !isNaN(numDeFilas) && numDeFilas >= MIN_TAMANO_TABLERO) {
                 casillasAncho = numDeColumnas;
                 casillasAlto = numDeFilas;  
-                document.getElementById("formulario").style.display = "none";
+                esconderFormulario();
                 empezarDeNuevo();
             }
+       }
+
+       function esconderFormulario() {
+           document.getElementById("formulario").style.display = "none";
        }
 
 
