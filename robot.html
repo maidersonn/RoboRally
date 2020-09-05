@@ -72,10 +72,10 @@
         <p >Elige tú mismo tu juego.</p>
         <dl>
             <dt>¿Cuántas columnas quieres?
-               <dd><input type="number" id="numColumna" min="3" step="1"></dd>
+               <dd><input type="number" id="numColumna" min="4" step="1"></dd>
             </dt>
             <dt>¿Cuántas filas quieres?
-                <dd><input type="number" id="numFila" min="3" step="1"></dd>
+                <dd><input type="number" id="numFila" min="4" step="1"></dd>
             </dt>
             <dt>¿Cuántas bombas quieres?
                 <dd><input type="number" id="numBombas" min="0" step="1"></dd>
@@ -89,7 +89,7 @@
     
     <script>
 
-        const MIN_TAMANO_TABLERO = 3;
+        const MIN_TAMANO_TABLERO = 4;
         let canvas = document.getElementById("el-lienzo");
         let ctx = canvas.getContext("2d");
         let posFila = 1;
@@ -100,7 +100,6 @@
         let isGameOver = false;
         let posicionDeRegaloX;
         let posicionDeRegaloY;
-       
         let isLevelCompleted = false;            
         let posZombiX;
         let posZombiY;
@@ -109,11 +108,9 @@
         let isZombiKilled = false;
         empezarDeNuevo();   
 
-
         function cambiarAPixels(casillas) {
             return casillas * 50;
         }
-
         
         function pintarTablero () {
             let anchoPixel = cambiarAPixels(casillasAncho);
@@ -498,8 +495,7 @@
         }
 
         function calcularElNumMaxDeBombas() {
-            return numColumnasQuePideUsuario() * numFilasQuePideUsuario() - 3;
-             
+            return Math.floor((numColumnasQuePideUsuario() * numFilasQuePideUsuario()) * 0.4 - 3);
         }
 
        function esconderFormulario() {
