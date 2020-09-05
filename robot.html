@@ -77,7 +77,9 @@
             <dt>¿Cuántas filas quieres?
                 <dd><input type="number" id="numFila" min="3" step="1"></dd>
             </dt>
-   
+            <dt>¿Cuántas bombas quieres?
+                <dd><input type="number" id="numBombas" min="0" step="1"></dd>
+            </dt>
         </dl>   
 
         <button type="button" onclick="validarFormulario()">Jugar</button>
@@ -94,22 +96,23 @@
         let posColumna = 1;
         document.addEventListener('keydown', keyPressed);
         let listaDePosicionDeBombas = [];
+        let numBombasAMeter = 5;
         let isGameOver = false;
         let posicionDeRegaloX;
         let posicionDeRegaloY;
+       
         let isLevelCompleted = false;            
         let posZombiX;
         let posZombiY;
         let casillasAncho = 10;
         let casillasAlto = 10;
         let isZombiKilled = false;
-        empezarDeNuevo();
-        
+        empezarDeNuevo();   
+
 
         function cambiarAPixels(casillas) {
             return casillas * 50;
         }
-
 
         
         function pintarTablero () {
@@ -242,7 +245,8 @@
                 ponerBombasRandom();
             } else {
                 let posicionBomba = columna + ',' + fila;
-                if (listaDePosicionDeBombas.includes(posicionBomba)) {
+                let posRegalo = posicionDeRegaloX + "," + posicionDeRegaloY;
+                if (listaDePosicionDeBombas.includes(posicionBomba) || posicionBomba == posRegalo) {
                     ponerBombasRandom();
                 } else {
                     let x = cambiarColumnaACoordenadaX(columna);
@@ -296,25 +300,22 @@
         }
 
         function ponerRegalo() {
-            // Se suman más 6, para que el regalo esté alejado de la posicion inicial del robot.
+            // Se hace así para que el regalo salga alejado del robot inicial.
             let fila = Math.floor(Math.random() * Math.ceil(casillasAlto/2)) + (Math.ceil(casillasAlto/2)) + 1;
             let columna = Math.floor(Math.random() * Math.ceil(casillasAncho/2)) + (Math.ceil(casillasAncho/2)) + 1;
-
+            
             
             if (columna > casillasAncho || fila > casillasAlto) {
                 ponerRegalo();
+           
             } else {
-                let posicionRegalo = columna + ',' + fila;
-                if (listaDePosicionDeBombas.includes(posicionRegalo)) {
-                    ponerRegalo();
-                } else {
-                    let x = cambiarColumnaACoordenadaX(columna);
-                    let y = cambiarFilaACoordenadaY(fila); 
-                    posicionDeRegaloX = columna;
-                    posicionDeRegaloY = fila; 
-                    ctx.font = '30px serif';
-                    ctx.fillText("🎁", x, y);
-                } 
+                let x = cambiarColumnaACoordenadaX(columna);
+                let y = cambiarFilaACoordenadaY(fila); 
+                posicionDeRegaloX = columna;
+                posicionDeRegaloY = fila; 
+                ctx.font = '30px serif';
+                ctx.fillText("🎁", x, y);
+                
             }     
         }
 
@@ -430,11 +431,11 @@
             isLevelCompleted = false;
             isZombiKilled = false;
             listaDePosicionDeBombas = [];
-            let numeroDeBombasQuePoner = 5;
-            for (let contador = 0; contador < numeroDeBombasQuePoner; contador++) {
+             ponerRegalo();
+            for (let i = 0; i < numBombasAMeter; i++) {
                 ponerBombasRandom();
             }
-            ponerRegalo();
+           
             ponerZombi();
         }
 
@@ -459,18 +460,47 @@
         }
 
 
-       function validarFormulario() {
-            
-            let numDeFilas = document.getElementById("numFila").value;
-            let numDeColumnas = document.getElementById("numColumna").value;
-            if (!isNaN(numDeColumnas) && numDeColumnas >= MIN_TAMANO_TABLERO 
-                    && !isNaN(numDeFilas) && numDeFilas >= MIN_TAMANO_TABLERO) {
-                casillasAncho = numDeColumnas;
-                casillasAlto = numDeFilas;  
+        function validarFormulario() {
+            if (esColumnaValido() && esFilaValido() && esNumBombasValido()) {
+                casillasAncho = numColumnasQuePideUsuario();
+                casillasAlto = numFilasQuePideUsuario();  
+                numBombasAMeter = numBombasQuePideUsuario();
                 esconderFormulario();
                 empezarDeNuevo();
+            } else {
+                alert("La configuración no es válida. Intentalo de nuevo.")
             }
-       }
+        }
+        function numColumnasQuePideUsuario() {
+            return document.getElementById("numColumna").value;
+        }
+
+        function numFilasQuePideUsuario() {
+            return document.getElementById("numFila").value;
+        }
+
+        function numBombasQuePideUsuario() {
+            return document.getElementById("numBombas").value;
+        }
+
+        function esColumnaValido() {
+            return (!isNaN(numColumnasQuePideUsuario()) && numColumnasQuePideUsuario() >= MIN_TAMANO_TABLERO)
+        }
+
+
+        function esFilaValido() {
+            return (!isNaN(numFilasQuePideUsuario()) && numFilasQuePideUsuario() >= MIN_TAMANO_TABLERO)
+        }
+
+        function esNumBombasValido() {
+            let condicionParadaDeNumBomasQuePoner = calcularElNumMaxDeBombas();
+            return (!isNaN(numBombasQuePideUsuario()) && numBombasQuePideUsuario() <= condicionParadaDeNumBomasQuePoner) 
+        }
+
+        function calcularElNumMaxDeBombas() {
+            return numColumnasQuePideUsuario() * numFilasQuePideUsuario() - 3;
+             
+        }
 
        function esconderFormulario() {
            document.getElementById("formulario").style.display = "none";
@@ -481,5 +511,4 @@
 
 </body>
 </html>
-    
     
