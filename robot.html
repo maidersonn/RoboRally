@@ -209,19 +209,20 @@
 
         
         function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min)) + min;
+            return Math.floor(Math.random() * (max + 1 - min)) + min;
         }
-     
-        function devuelveNumRandomMax(casillas) {
-            return parseInt(casillas) + 1;
+
+        function isNearRobot(columna, fila) {
+            let zonaLibreDeRobotX = Math.ceil(casillasAncho * 0.3);
+            let zonaLibreDeRobotY = Math.ceil(casillasAlto * 0.3);
+            return (columna <= zonaLibreDeRobotX && fila <= zonaLibreDeRobotY);
         }
         
         function ponerBombasRandom() {
 
-            let fila = getRandomInt(NUME_RANDOM_MINIMO, devuelveNumRandomMax(casillasAlto));
-            let columna = getRandomInt(NUME_RANDOM_MINIMO, devuelveNumRandomMax(casillasAncho)); 
-
-            if (columna == 1 && fila == 1) {
+            let fila = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAlto));
+            let columna = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAncho)); 
+            if (isNearRobot(columna, fila)) {
                 ponerBombasRandom();
             } else {
                 let posicionBomba = columna + ',' + fila;
@@ -280,28 +281,19 @@
         }
 
         function devuelveNumRandomMinEnRegalo(casillas) {
-            return Math.ceil(casillas * 0.5);
+            return Math.ceil(casillas * 0.6);
         }
-
 
         function ponerRegalo() {
           
-            let fila = getRandomInt(devuelveNumRandomMinEnRegalo(casillasAlto), devuelveNumRandomMax(casillasAlto));
-            let columna = getRandomInt(devuelveNumRandomMinEnRegalo(casillasAncho),devuelveNumRandomMax(casillasAncho));
-            
-            //este if sobra,
-            if (columna > casillasAncho || fila > casillasAlto) {
-                ponerRegalo();
-           
-            } else {
-                let x = cambiarColumnaACoordenadaX(columna);
-                let y = cambiarFilaACoordenadaY(fila); 
-                posicionDeRegaloX = columna;
-                posicionDeRegaloY = fila; 
-                ctx.font = '30px serif';
-                ctx.fillText("🎁", x, y);
-                
-            }     
+            let fila = getRandomInt(devuelveNumRandomMinEnRegalo(casillasAlto), parseInt(casillasAlto));
+            let columna = getRandomInt(devuelveNumRandomMinEnRegalo(casillasAncho),parseInt(casillasAncho));
+            let x = cambiarColumnaACoordenadaX(columna);
+            let y = cambiarFilaACoordenadaY(fila); 
+            posicionDeRegaloX = columna;
+            posicionDeRegaloY = fila; 
+            ctx.font = '30px serif';
+            ctx.fillText("🎁", x, y);    
         }
 
         function repintarRegalo() {
@@ -328,8 +320,8 @@
 
         function ponerZombi() {
             //TODO Aqui puedo poner el bucle con la cantidad de zombis q pide el usuario?
-            let fila = getRandomInt(NUME_RANDOM_MINIMO, devuelveNumRandomMax(casillasAlto));
-            let columna = getRandomInt(NUME_RANDOM_MINIMO, devuelveNumRandomMax(casillasAncho));
+            let fila = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAlto));
+            let columna = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAncho));
             
             let posZombi = columna + ',' + fila;
 
