@@ -159,57 +159,31 @@
             if (!isGameOver && !isLevelCompleted && posFila < casillasAlto) {
                 posFila = posFila + 1;
             }
-            borrarTablero();
-            pintarTablero();
-            pintarRobot(); 
-            repintarBombas(); 
-            repintarRegalo();
-            comprobarSiHayBomba();
-            comprobarSiHayRegalo();
-            comprobarSiRobotPillado();
-            perseguirAlRobot();
-            comprobarSiRobotPillado();
-            explotarZombi();
+            refrescar();
         }
 
         function moverArriba() {
             if (!isGameOver && !isLevelCompleted && posFila > 1) {
                 posFila = posFila - 1; 
             }
-            borrarTablero();
-            pintarTablero();
-            pintarRobot(); 
-            repintarBombas();
-            repintarRegalo();  
-            comprobarSiHayBomba();  
-            comprobarSiHayRegalo();  
-            comprobarSiRobotPillado();
-            perseguirAlRobot();
-            comprobarSiRobotPillado();
-            explotarZombi();
+            refrescar();
         }
 
         function moverDerecha() {
             if (!isGameOver && !isLevelCompleted && posColumna < casillasAncho) {
                 posColumna = posColumna + 1;
             }
-            borrarTablero();
-            pintarTablero();
-            pintarRobot();
-            repintarBombas();
-            repintarRegalo();
-            comprobarSiHayBomba();
-            comprobarSiHayRegalo();
-            comprobarSiRobotPillado();
-            perseguirAlRobot();
-            comprobarSiRobotPillado();
-            explotarZombi();
+            refrescar();
         }
 
         function moverIzquierda() {
             if (!isGameOver && !isLevelCompleted && posColumna > 1) {
                 posColumna = posColumna - 1;
             }
+            refrescar();
+        }
+
+        function refrescar() {
             borrarTablero();
             pintarTablero();
             pintarRobot();
