@@ -318,7 +318,7 @@
             ctx.textAlign = "start";
         }
 
-        function ponerZombi() {
+        function ponerZombi(numZombi) {
             //TODO Aqui puedo poner el bucle con la cantidad de zombis q pide el usuario?
             let fila = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAlto));
             let columna = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAncho));
@@ -326,15 +326,15 @@
             let posZombi = columna + ',' + fila;
 
             if (columna == 1 && fila == 1) {
-                ponerZombi();
+                ponerZombi(numZombi);
             } else if (listaDePosicionDeBombas.includes(posZombi)){
-                ponerZombi();
+                ponerZombi(numZombi);
                 //TODO Y en tonces aqui otro else if, si listaZombis incluye posZombi
             } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
-                ponerZombi();
+                ponerZombi(numZombi);
             } else {
-                posZombiX[0] = columna;
-                posZombiY[0] = fila;
+                posZombiX[numZombi] = columna;
+                posZombiY[numZombi] = fila;
                 let x = cambiarColumnaACoordenadaX(columna);
                 let y = cambiarFilaACoordenadaY(fila); 
                 ctx.font = '30px serif';
@@ -414,7 +414,7 @@
                 ponerBombasRandom();
             }
            
-            ponerZombi();
+            ponerZombi(0);
         }
 
         function isZombiEnBomba() {
