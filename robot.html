@@ -192,7 +192,7 @@
             comprobarSiHayBomba();
             comprobarSiHayRegalo();
             comprobarSiRobotPillado();
-            perseguirAlRobot();
+            perseguirAlRobot(0);
             comprobarSiRobotPillado();
             explotarZombi();
         }
@@ -376,20 +376,20 @@
             }
         } 
 
-        function perseguirAlRobot() {
+        function perseguirAlRobot(numZombi) {
             if (!isGameOver && !isLevelCompleted && !isZombiKilled) {
-                let diferenciaEnColumna = Math.abs(posColumna - posZombiX[0]);
-                let diferenciaEnFila = Math.abs(posFila - posZombiY[0]);
+                let diferenciaEnColumna = Math.abs(posColumna - posZombiX[numZombi]);
+                let diferenciaEnFila = Math.abs(posFila - posZombiY[numZombi]);
                 if (diferenciaEnColumna < diferenciaEnFila) {
-                    perseguirPorFila(0);
+                    perseguirPorFila(numZombi);
                 } else {
-                    perseguirPorColumna(0);
+                    perseguirPorColumna(numZombi);
                 } 
             } 
         } 
 
-        function comprobarSiRobotPillado() {
-            if (posColumna == posZombiX[0] && posFila == posZombiY[0]) {
+        function comprobarSiRobotPillado(numZombi) {
+            if (posColumna == posZombiX[numZombi] && posFila == posZombiY[numZombi]) {
                 pintarGameOver();
                 isGameOver = true;
             }
