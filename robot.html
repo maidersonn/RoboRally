@@ -342,35 +342,35 @@
             }     
         }   
 
-        function perseguirPorColumna() {
-            let y = cambiarFilaACoordenadaY(posZombiY[0]);
+        function perseguirPorColumna(numZombi) {
+            let y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
             let x;  
             
-                if (posColumna > posZombiX[0]) {
-                    posZombiX[0]++;
-                    x = cambiarColumnaACoordenadaX(posZombiX[0]);
+                if (posColumna > posZombiX[numZombi]) {
+                    posZombiX[numZombi]++;
+                    x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
                     ctx.font = '30px serif';
                     ctx.fillText("🧟‍♂️", x, y);
                 } else  {
-                    posZombiX[0]--;
-                    x = cambiarColumnaACoordenadaX(posZombiX[0]);
+                    posZombiX[numZombi]--;
+                    x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
                     ctx.font = '30px serif';
                     ctx.fillText("🧟‍♂️", x, y);
                 }  
         } 
 
-        function perseguirPorFila() {
-            let x = cambiarColumnaACoordenadaX(posZombiX[0]);
+        function perseguirPorFila(numZombi) {
+            let x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
             let y;
 
-            if (posFila > posZombiY[0]) {
-                posZombiY[0]++;
-                y = cambiarFilaACoordenadaY(posZombiY[0]);
+            if (posFila > posZombiY[numZombi]) {
+                posZombiY[numZombi]++;
+                y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
                 ctx.font = '30px serif';
                 ctx.fillText("🧟‍♂️", x, y);
-            } else if (posFila < posZombiY[0]) {
-                posZombiY[0]--;
-                y = cambiarFilaACoordenadaY(posZombiY[0]);
+            } else if (posFila < posZombiY[numZombi]) {
+                posZombiY[numZombi]--;
+                y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
                 ctx.font = '30px serif';
                 ctx.fillText("🧟‍♂️", x, y);
             }
@@ -381,9 +381,9 @@
                 let diferenciaEnColumna = Math.abs(posColumna - posZombiX[0]);
                 let diferenciaEnFila = Math.abs(posFila - posZombiY[0]);
                 if (diferenciaEnColumna < diferenciaEnFila) {
-                    perseguirPorFila();
+                    perseguirPorFila(0);
                 } else {
-                    perseguirPorColumna();
+                    perseguirPorColumna(0);
                 } 
             } 
         } 
