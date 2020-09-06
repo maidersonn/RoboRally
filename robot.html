@@ -102,8 +102,8 @@
         let posicionDeRegaloX;
         let posicionDeRegaloY;
         let isLevelCompleted = false;            
-        let posZombiX;
-        let posZombiY;
+        let posZombiX = [0];
+        let posZombiY = [0];
         let casillasAncho = 10;
         let casillasAlto = 10;
         let isZombiKilled = false;
@@ -333,8 +333,8 @@
             } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
                 ponerZombi();
             } else {
-                posZombiX = columna;
-                posZombiY = fila;
+                posZombiX[0] = columna;
+                posZombiY[0] = fila;
                 let x = cambiarColumnaACoordenadaX(columna);
                 let y = cambiarFilaACoordenadaY(fila); 
                 ctx.font = '30px serif';
@@ -343,34 +343,34 @@
         }   
 
         function perseguirPorColumna() {
-            let y = cambiarFilaACoordenadaY(posZombiY);
+            let y = cambiarFilaACoordenadaY(posZombiY[0]);
             let x;  
             
-                if (posColumna > posZombiX) {
-                    posZombiX++;
-                    x = cambiarColumnaACoordenadaX(posZombiX);
+                if (posColumna > posZombiX[0]) {
+                    posZombiX[0]++;
+                    x = cambiarColumnaACoordenadaX(posZombiX[0]);
                     ctx.font = '30px serif';
                     ctx.fillText("🧟‍♂️", x, y);
                 } else  {
-                    posZombiX--;
-                    x = cambiarColumnaACoordenadaX(posZombiX);
+                    posZombiX[0]--;
+                    x = cambiarColumnaACoordenadaX(posZombiX[0]);
                     ctx.font = '30px serif';
                     ctx.fillText("🧟‍♂️", x, y);
                 }  
         } 
 
         function perseguirPorFila() {
-            let x = cambiarColumnaACoordenadaX(posZombiX);
+            let x = cambiarColumnaACoordenadaX(posZombiX[0]);
             let y;
 
-            if (posFila > posZombiY) {
-                posZombiY++;
-                y = cambiarFilaACoordenadaY(posZombiY);
+            if (posFila > posZombiY[0]) {
+                posZombiY[0]++;
+                y = cambiarFilaACoordenadaY(posZombiY[0]);
                 ctx.font = '30px serif';
                 ctx.fillText("🧟‍♂️", x, y);
-            } else if (posFila < posZombiY) {
-                posZombiY--;
-                y = cambiarFilaACoordenadaY(posZombiY);
+            } else if (posFila < posZombiY[0]) {
+                posZombiY[0]--;
+                y = cambiarFilaACoordenadaY(posZombiY[0]);
                 ctx.font = '30px serif';
                 ctx.fillText("🧟‍♂️", x, y);
             }
@@ -378,8 +378,8 @@
 
         function perseguirAlRobot() {
             if (!isGameOver && !isLevelCompleted && !isZombiKilled) {
-                let diferenciaEnColumna = Math.abs(posColumna - posZombiX);
-                let diferenciaEnFila = Math.abs(posFila - posZombiY);
+                let diferenciaEnColumna = Math.abs(posColumna - posZombiX[0]);
+                let diferenciaEnFila = Math.abs(posFila - posZombiY[0]);
                 if (diferenciaEnColumna < diferenciaEnFila) {
                     perseguirPorFila();
                 } else {
@@ -389,7 +389,7 @@
         } 
 
         function comprobarSiRobotPillado() {
-            if (posColumna == posZombiX && posFila == posZombiY) {
+            if (posColumna == posZombiX[0] && posFila == posZombiY[0]) {
                 pintarGameOver();
                 isGameOver = true;
             }
@@ -418,7 +418,7 @@
         }
 
         function isZombiEnBomba() {
-            let posZon = posZombiX + "," + posZombiY;
+            let posZon = posZombiX[0] + "," + posZombiY[0];
             return listaDePosicionDeBombas.includes(posZon)
         }
 
@@ -426,14 +426,14 @@
             if (isZombiEnBomba()) {
                 isZombiKilled = true;
                 ctx.font = "30px serif";
-                let x = cambiarColumnaACoordenadaX(posZombiX);
-                let y = cambiarFilaACoordenadaY(posZombiY);
+                let x = cambiarColumnaACoordenadaX(posZombiX[0]);
+                let y = cambiarFilaACoordenadaY(posZombiY[0]);
                 ctx.fillText("💥", x, y);
-                let posZon = posZombiX + "," + posZombiY;
+                let posZon = posZombiX[0] + "," + posZombiY[0];
                 let posicionBombaABorrar = listaDePosicionDeBombas.indexOf(posZon);
                 listaDePosicionDeBombas.splice(posicionBombaABorrar,1);
-                posZombiX = undefined;
-                posZombiY = undefined;
+                posZombiX[0] = undefined;
+                posZombiY[0] = undefined;
             }
         }
 
