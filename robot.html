@@ -194,7 +194,7 @@
             comprobarSiRobotPillado();
             perseguirAlRobot(0);
             comprobarSiRobotPillado();
-            explotarZombi();
+            explotarZombi(0);
         }
 
 
@@ -417,23 +417,23 @@
             ponerZombi(0);
         }
 
-        function isZombiEnBomba() {
-            let posZon = posZombiX[0] + "," + posZombiY[0];
+        function isZombiEnBomba(numZombi) {
+            let posZon = posZombiX[numZombi] + "," + posZombiY[numZombi];
             return listaDePosicionDeBombas.includes(posZon)
         }
 
-        function explotarZombi() {   
-            if (isZombiEnBomba()) {
+        function explotarZombi(numZombi) {   
+            if (isZombiEnBomba(numZombi)) {
                 isZombiKilled = true;
                 ctx.font = "30px serif";
-                let x = cambiarColumnaACoordenadaX(posZombiX[0]);
-                let y = cambiarFilaACoordenadaY(posZombiY[0]);
+                let x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
+                let y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
                 ctx.fillText("💥", x, y);
-                let posZon = posZombiX[0] + "," + posZombiY[0];
+                let posZon = posZombiX[numZombi] + "," + posZombiY[numZombi];
                 let posicionBombaABorrar = listaDePosicionDeBombas.indexOf(posZon);
                 listaDePosicionDeBombas.splice(posicionBombaABorrar,1);
-                posZombiX[0] = undefined;
-                posZombiY[0] = undefined;
+                posZombiX[numZombi] = undefined;
+                posZombiY[numZombi] = undefined;
             }
         }
 
