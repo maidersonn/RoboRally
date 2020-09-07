@@ -106,7 +106,8 @@
         let posZombiY = [0];
         let casillasAncho = 10;
         let casillasAlto = 10;
-        let isZombiKilled = false;
+        let numZombisAMeter = 5;
+        let zombisExplotados = [];
         empezarDeNuevo();   
 
         function cambiarAPixels(casillas) {
@@ -184,17 +185,25 @@
         }
 
         function refrescar() {
-            borrarTablero();
-            pintarTablero();
-            pintarRobot();
-            repintarBombas();
-            repintarRegalo(); 
-            comprobarSiHayBomba();
-            comprobarSiHayRegalo();
-            comprobarSiRobotPillado(0);
-            perseguirAlRobot(0);
-            comprobarSiRobotPillado(0);
-            explotarZombi(0);
+            borrarTablero();    //Pinta
+            pintarTablero();    //Pinta
+            pintarRobot();      //Pinta
+            repintarBombas();   //Pinta
+            repintarRegalo();   //Pinta
+            comprobarSiHayBomba();  //Pinta Y actualiza estado Si fin de juego
+            comprobarSiHayRegalo(); //Pinta Y actualiza estado Si fin de juego
+
+            for (i = 0; i < posZombiX.length; i++) { // Para cada zombi
+                comprobarSiRobotPillado(i);         //Pinta Y actualiza estado Si fin de juego
+                perseguirAlRobot(i);                //Actualiza estado
+                repintarZombis(i);                  //Pinta
+                comprobarSiRobotPillado(i);         //Pinta Y actualiza estado Si fin de juego
+                explotarZombi(i);                   //Pinta y actualiza estado
+            } 
+            for (i = 0; i < posZombiX.length; i++) {
+                borrarBombasExplotadas(i);          //Actualiza estado
+            } 
+            borrarZombisExplotados();               //Actualiza estado.
         }
 
 
@@ -319,7 +328,6 @@
         }
 
         function ponerZombi(numZombi) {
-            //TODO Aqui puedo poner el bucle con la cantidad de zombis q pide el usuario?
             let fila = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAlto));
             let columna = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAncho));
             
@@ -329,7 +337,6 @@
                 ponerZombi(numZombi);
             } else if (listaDePosicionDeBombas.includes(posZombi)){
                 ponerZombi(numZombi);
-                //TODO Y en tonces aqui otro else if, si listaZombis incluye posZombi
             } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
                 ponerZombi(numZombi);
             } else {
@@ -348,14 +355,8 @@
             
                 if (posColumna > posZombiX[numZombi]) {
                     posZombiX[numZombi]++;
-                    x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
-                    ctx.font = '30px serif';
-                    ctx.fillText("🧟‍♂️", x, y);
                 } else  {
                     posZombiX[numZombi]--;
-                    x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
-                    ctx.font = '30px serif';
-                    ctx.fillText("🧟‍♂️", x, y);
                 }  
         } 
 
@@ -365,19 +366,21 @@
 
             if (posFila > posZombiY[numZombi]) {
                 posZombiY[numZombi]++;
-                y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
-                ctx.font = '30px serif';
-                ctx.fillText("🧟‍♂️", x, y);
+              
             } else if (posFila < posZombiY[numZombi]) {
                 posZombiY[numZombi]--;
-                y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
-                ctx.font = '30px serif';
-                ctx.fillText("🧟‍♂️", x, y);
             }
         } 
 
+        function repintarZombis (numZombi) {
+                x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
+                y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
+                ctx.font = '30px serif';
+                ctx.fillText("🧟‍♂️", x, y);   
+        }
+
         function perseguirAlRobot(numZombi) {
-            if (!isGameOver && !isLevelCompleted && !isZombiKilled) {
+            if (!isGameOver && !isLevelCompleted) {
                 let diferenciaEnColumna = Math.abs(posColumna - posZombiX[numZombi]);
                 let diferenciaEnFila = Math.abs(posFila - posZombiY[numZombi]);
                 if (diferenciaEnColumna < diferenciaEnFila) {
@@ -407,14 +410,14 @@
             pintarRobot();
             isGameOver = false;
             isLevelCompleted = false;
-            isZombiKilled = false;
             listaDePosicionDeBombas = [];
              ponerRegalo();
             for (let i = 0; i < numBombasAMeter; i++) {
                 ponerBombasRandom();
             }
-           
-            ponerZombi(0);
+            for (let i = 0; i < numZombisAMeter; i++) {
+                ponerZombi(i);
+            }
         }
 
         function isZombiEnBomba(numZombi) {
@@ -424,17 +427,28 @@
 
         function explotarZombi(numZombi) {   
             if (isZombiEnBomba(numZombi)) {
-                isZombiKilled = true;
                 ctx.font = "30px serif";
                 let x = cambiarColumnaACoordenadaX(posZombiX[numZombi]);
                 let y = cambiarFilaACoordenadaY(posZombiY[numZombi]);
                 ctx.fillText("💥", x, y);
+                zombisExplotados.push(numZombi);
+            }
+        }
+
+        function borrarBombasExplotadas(numZombi) {
+            if (isZombiEnBomba(numZombi)) {
                 let posZon = posZombiX[numZombi] + "," + posZombiY[numZombi];
                 let posicionBombaABorrar = listaDePosicionDeBombas.indexOf(posZon);
-                listaDePosicionDeBombas.splice(posicionBombaABorrar,1);
-                posZombiX[numZombi] = undefined;
-                posZombiY[numZombi] = undefined;
+                listaDePosicionDeBombas.splice(posicionBombaABorrar, 1);
             }
+        }
+
+        function borrarZombisExplotados() {
+            for (let i = zombisExplotados.length -1; i >= 0; i--) {
+                posZombiX.splice(zombisExplotados[i], 1);
+                posZombiY.splice(zombisExplotados[i], 1);
+            }
+            zombisExplotados = [];
         }
 
 
