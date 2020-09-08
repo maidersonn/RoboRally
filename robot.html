@@ -38,6 +38,15 @@
             font-style: italic;
             text-align: center;
         }
+        h3 {
+            font-size: 30px;
+        }
+        p {
+            font-size: 25px;
+        }
+        dt {
+            font-size: 20px;
+        }
     </style>
     
 </head>
@@ -106,8 +115,9 @@
         let posZombiY = [0];
         let casillasAncho = 10;
         let casillasAlto = 10;
-        let numZombisAMeter = 5;
+        let numZombisAMeter = 15;
         let zombisExplotados = [];
+        let coordenadasZombi = [];
         empezarDeNuevo();   
 
         function cambiarAPixels(casillas) {
@@ -323,25 +333,28 @@
             ctx.fillStyle = "blue";
             ctx.textAlign = "center";
             ctx.font = "40px arial";
-            ctx.fillText("LEVEL COMPLETED !!!", canvas.width/2, canvas.height/2);
+            ctx.fillText("YOU WIN !!!", canvas.width/2, canvas.height/2);
             ctx.textAlign = "start";
         }
-
+      
         function ponerZombi(numZombi) {
             let fila = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAlto));
             let columna = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAncho));
             
             let posZombi = columna + ',' + fila;
-
+            
             if (columna == 1 && fila == 1) {
                 ponerZombi(numZombi);
             } else if (listaDePosicionDeBombas.includes(posZombi)){
                 ponerZombi(numZombi);
             } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
                 ponerZombi(numZombi);
+            } else if (coordenadasZombi.includes(posZombi)) {
+                ponerZombi(numZombi);
             } else {
                 posZombiX[numZombi] = columna;
                 posZombiY[numZombi] = fila;
+                coordenadasZombi.push(posZombi);
                 let x = cambiarColumnaACoordenadaX(columna);
                 let y = cambiarFilaACoordenadaY(fila); 
                 ctx.font = '30px serif';
@@ -411,7 +424,8 @@
             isGameOver = false;
             isLevelCompleted = false;
             listaDePosicionDeBombas = [];
-             ponerRegalo();
+            coordenadasZombi = [];
+            ponerRegalo();
             for (let i = 0; i < numBombasAMeter; i++) {
                 ponerBombasRandom();
             }
