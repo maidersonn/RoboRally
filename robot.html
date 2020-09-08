@@ -89,6 +89,9 @@
             <dt>¿Cuántas bombas quieres?
                 <dd><input type="number" id="numBombas" min="0" step="1"></dd>
             </dt>
+            <dt>¿Cuántos zombis quieres?
+                <dd><input type="number" id="numZombis" min="0" step="1"></dd>
+            </dt>
         </dl>   
 
         <button type="button" onclick="validarFormulario()">Jugar</button>
@@ -336,27 +339,35 @@
             ctx.fillText("YOU WIN !!!", canvas.width/2, canvas.height/2);
             ctx.textAlign = "start";
         }
-      
+
+        function estaDondeRobot(columna, fila) {
+            return (columna == 1 && fila == 1);
+        }
+        function estaDondeBomba(posZombi) {
+            return (listaDePosicionDeBombas.includes(posZombi));
+        }
+        function estaDondeRegalo(columna, fila) {
+            return (posicionDeRegaloX == columna && posicionDeRegaloY == fila);
+        }
+        
         function ponerZombi(numZombi) {
-            let fila = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAlto));
-            let columna = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAncho));
+            let filaRandom = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAlto));
+            let columnaRandom = getRandomInt(NUME_RANDOM_MINIMO, parseInt(casillasAncho));
+        
+            let posZombi = columnaRandom + ',' + filaRandom;
             
-            let posZombi = columna + ',' + fila;
-            
-            if (columna == 1 && fila == 1) {
-                ponerZombi(numZombi);
-            } else if (listaDePosicionDeBombas.includes(posZombi)){
-                ponerZombi(numZombi);
-            } else if (posicionDeRegaloX == columna && posicionDeRegaloY == fila) {
-                ponerZombi(numZombi);
-            } else if (coordenadasZombi.includes(posZombi)) {
+            if (estaDondeRobot(columnaRandom, filaRandom) || 
+                estaDondeBomba(posZombi) || 
+                estaDondeRegalo(columnaRandom, filaRandom) || 
+                isNearRobot(columnaRandom, filaRandom)) {
+
                 ponerZombi(numZombi);
             } else {
-                posZombiX[numZombi] = columna;
-                posZombiY[numZombi] = fila;
+                posZombiX[numZombi] = columnaRandom;
+                posZombiY[numZombi] = filaRandom;
                 coordenadasZombi.push(posZombi);
-                let x = cambiarColumnaACoordenadaX(columna);
-                let y = cambiarFilaACoordenadaY(fila); 
+                let x = cambiarColumnaACoordenadaX(columnaRandom);
+                let y = cambiarFilaACoordenadaY(filaRandom); 
                 ctx.font = '30px serif';
                 ctx.fillText('🧟‍♂️', x, y);
             }     
@@ -426,6 +437,7 @@
             listaDePosicionDeBombas = [];
             coordenadasZombi = [];
             ponerRegalo();
+
             for (let i = 0; i < numBombasAMeter; i++) {
                 ponerBombasRandom();
             }
@@ -467,10 +479,11 @@
 
 
         function validarFormulario() {
-            if (esColumnaValido() && esFilaValido() && esNumBombasValido()) {
+            if (esColumnaValido() && esFilaValido() && esNumBombasValido() && esnumZombisValido()) {
                 casillasAncho = numColumnasQuePideUsuario();
                 casillasAlto = numFilasQuePideUsuario();  
                 numBombasAMeter = numBombasQuePideUsuario();
+                numZombisAMeter = numZombisQuePideUsuario();
                 esconderFormulario();
                 empezarDeNuevo();
             } else {
@@ -489,22 +502,33 @@
             return document.getElementById("numBombas").value;
         }
 
+        function numZombisQuePideUsuario() {
+            return document.getElementById("numZombis").value;
+        }
+
         function esColumnaValido() {
-            return (!isNaN(numColumnasQuePideUsuario()) && numColumnasQuePideUsuario() >= MIN_TAMANO_TABLERO)
+            return (!isNaN(numColumnasQuePideUsuario()) && numColumnasQuePideUsuario() >= MIN_TAMANO_TABLERO);
         }
 
 
         function esFilaValido() {
-            return (!isNaN(numFilasQuePideUsuario()) && numFilasQuePideUsuario() >= MIN_TAMANO_TABLERO)
+            return (!isNaN(numFilasQuePideUsuario()) && numFilasQuePideUsuario() >= MIN_TAMANO_TABLERO);
         }
 
         function esNumBombasValido() {
-            let condicionParadaDeNumBomasQuePoner = calcularElNumMaxDeBombas();
-            return (!isNaN(numBombasQuePideUsuario()) && numBombasQuePideUsuario() <= condicionParadaDeNumBomasQuePoner) 
+            return (!isNaN(numBombasQuePideUsuario()) && numBombasQuePideUsuario() <= calcularElNumMaxDeBombas()); 
         }
 
         function calcularElNumMaxDeBombas() {
-            return Math.floor((numColumnasQuePideUsuario() * numFilasQuePideUsuario()) * 0.4 - 3);
+            return Math.floor((numColumnasQuePideUsuario() * numFilasQuePideUsuario()) * 0.4);
+        }
+
+        function esnumZombisValido() {
+            return (!isNaN(numZombisQuePideUsuario()) && numZombisQuePideUsuario() <= calcularNumMaxZombis());
+        }
+
+        function calcularNumMaxZombis() {
+            return Math.floor(calcularElNumMaxDeBombas() / 3);
         }
 
        function esconderFormulario() {
