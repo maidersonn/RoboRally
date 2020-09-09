@@ -297,7 +297,8 @@
         function pintarGameOver() {
             ctx.fillStyle = "red";
             ctx.textAlign = "center";
-            ctx.font = "60px arial";
+            let tamanoLetra = canvas.width/10;
+            ctx.font = tamanoLetra + "px arial";
             ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
             ctx.textAlign = "start";
         }
@@ -335,7 +336,8 @@
         function pintarLevelCompleted() {
             ctx.fillStyle = "blue";
             ctx.textAlign = "center";
-            ctx.font = "40px arial";
+            let tamanoLetra = canvas.width/10;
+            ctx.font = tamanoLetra + "px arial";
             ctx.fillText("YOU WIN !!!", canvas.width/2, canvas.height/2);
             ctx.textAlign = "start";
         }
